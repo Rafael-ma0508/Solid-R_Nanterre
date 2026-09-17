@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Solid'R — Administration</title>
+<link rel="icon" type="image/jpeg" href="./img/logo.jpg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --color-bg:#111712;--color-surface:#182019;--color-surface-2:#1f2821;--color-border:rgba(220,236,223,.10);
+    --color-text:#edf4ed;--color-text-muted:#b4c4b4;--color-primary:#78be8c;--color-primary-hover:#9ad0aa;--color-text-inverse:#122016;
+    --color-danger:#e08a8a;--color-danger-bg:rgba(224,138,138,.12);--color-ok:#78be8c;--color-ok-bg:rgba(120,190,140,.12);
+    --radius-md:.75rem;--radius-lg:1.1rem;--radius-full:9999px;--font-display:'Fraunces',Georgia,serif;--font-body:'Manrope',sans-serif;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100dvh;font-family:var(--font-body);background:var(--color-bg);color:var(--color-text);line-height:1.5;padding-bottom:4rem}
+  h1,h2,h3{font-family:var(--font-display);line-height:1.15}
+  .wrap{width:min(calc(100% - 2rem),960px);margin-inline:auto}
+  header{padding:1.25rem 0;border-bottom:1px solid var(--color-border);margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+  header .brand{display:flex;align-items:center;gap:.75rem}
+  header img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid var(--color-border)}
+  header h1{font-size:1.3rem}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:42px;padding:.7rem 1.1rem;border-radius:var(--radius-full);font-size:.9rem;font-weight:700;cursor:pointer;border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text);transition:.15s}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:var(--color-primary);color:var(--color-text-inverse);border-color:transparent}
+  .btn-primary:hover{background:var(--color-primary-hover)}
+  .btn-danger{background:var(--color-danger-bg);color:var(--color-danger);border-color:rgba(224,138,138,.3)}
+  .btn-ghost{background:transparent}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .card{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem}
+  .center-screen{min-height:70vh;display:flex;align-items:center;justify-content:center}
+  .auth-card{max-width:420px;width:100%;text-align:center}
+  .auth-card p{color:var(--color-text-muted);font-size:.9rem;margin:.75rem 0 1.25rem}
+  label{display:block;font-size:.85rem;font-weight:700;margin-bottom:.4rem;color:var(--color-text)}
+  input,textarea,select{width:100%;border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text);border-radius:var(--radius-md);padding:.75rem .9rem;font:inherit;margin-bottom:1rem}
+  textarea{min-height:100px;resize:vertical}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+  .tab-btn{padding:.6rem 1rem;border-radius:var(--radius-full);border:1px solid var(--color-border);background:var(--color-surface-2);color:var(--color-text-muted);font-weight:700;font-size:.85rem;cursor:pointer}
+  .tab-btn.active{background:var(--color-primary);color:var(--color-text-inverse);border-color:transparent}
+  .panel{display:none}
+  .panel.active{display:block}
+  .repeat-item{border:1px solid var(--color-border);border-radius:var(--radius-md);padding:1rem;margin-bottom:.75rem;position:relative;background:var(--color-surface-2)}
+  .repeat-item .remove-btn{position:absolute;top:.6rem;right:.6rem}
+  .add-row{margin-top:.5rem}
+  .status{margin-top:1rem;padding:.85rem 1rem;border-radius:var(--radius-md);font-size:.88rem;display:none}
+  .status.ok{display:block;background:var(--color-ok-bg);color:var(--color-ok)}
+  .status.err{display:block;background:var(--color-danger-bg);color:var(--color-danger)}
+  .status.loading{display:block;background:var(--color-surface-2);color:var(--color-text-muted)}
+  .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem;margin-bottom:1.25rem}
+  .gallery-item{border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;background:var(--color-surface-2)}
+  .gallery-item img{width:100%;height:110px;object-fit:cover;display:block}
+  .gallery-item .gi-body{padding:.6rem}
+  .gallery-item input{margin-bottom:.5rem;font-size:.8rem;padding:.5rem .6rem}
+  .hint{font-size:.8rem;color:var(--color-text-muted);margin-top:-.5rem;margin-bottom:1rem}
+  .badge{display:inline-flex;padding:.3rem .7rem;border-radius:var(--radius-full);background:rgba(120,190,140,.14);color:#b8e7c3;font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+  a{color:var(--color-primary)}
+  @media(max-width:640px){.field-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="center-screen">
+  <div class="card auth-card">
+    <span class="badge">Zone privée</span>
+    <h1>Administration Solid'R</h1>
+    <p>Entrez le mot de passe pour accéder à l'espace de gestion du site.</p>
+    <label for="pw-input" style="text-align:left">Mot de passe</label>
+    <input type="password" id="pw-input" placeholder="••••••••">
+    <button class="btn btn-primary" style="width:100%" onclick="checkPassword()">Se connecter</button>
+    <div id="pw-status" class="status err"></div>
+  </div>
+</div>
+
+<div id="token-screen" class="center-screen" style="display:none">
+  <div class="card auth-card">
+    <span class="badge">Étape 2</span>
+    <h1>Connexion à GitHub</h1>
+    <p>Pour publier les changements, il faut un jeton d'accès GitHub (Personal Access Token) avec le droit d'écrire sur le dépôt <strong>Rafael-ma0508/Solid-R_Nanterre</strong>.<br><br>
+    Sur GitHub : Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token → sélectionner ce dépôt → autorisation "Contents: Read and write".<br><br>
+    Ce jeton reste uniquement sur cet appareil (stocké dans le navigateur), il n'est jamais envoyé ailleurs qu'à GitHub.</p>
+    <label for="token-input" style="text-align:left">Jeton GitHub (commence par ghp_ ou github_pat_)</label>
+    <input type="password" id="token-input" placeholder="ghp_...">
+    <button class="btn btn-primary" style="width:100%" onclick="saveToken()">Enregistrer et continuer</button>
+    <div id="token-status" class="status err"></div>
+  </div>
+</div>
+
+<div id="admin-app" style="display:none">
+  <div class="wrap">
+    <header>
+      <div class="brand"><img src="./img/logo.jpg" alt="Logo Solid'R"><h1>Administration</h1></div>
+      <div style="display:flex;gap:.6rem">
+        <a class="btn btn-ghost" href="./index.html" target="_blank">Voir le site</a>
+        <button class="btn btn-ghost" onclick="changeToken()">Changer de jeton</button>
+        <button class="btn btn-danger" onclick="logout()">Se déconnecter</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="stats">Chiffres clés</button>
+      <button class="tab-btn" data-tab="latest">Dernière action</button>
+      <button class="tab-btn" data-tab="timeline">Actions récentes</button>
+      <button class="tab-btn" data-tab="gallery">Galerie</button>
+    </div>
+
+    <div id="global-status" class="status"></div>
+
+    <!-- CHIFFRES CLES -->
+    <section class="panel active" id="panel-stats">
+      <div class="card">
+        <h2 style="font-size:1.2rem;margin-bottom:1rem">Chiffres clés</h2>
+        <div id="stats-list"></div>
+        <button class="btn add-row" onclick="addStat()">+ Ajouter un chiffre</button>
+      </div>
+      <button class="btn btn-primary" onclick="saveStats()">Publier les chiffres clés</button>
+    </section>
+
+    <!-- DERNIERE ACTION -->
+    <section class="panel" id="panel-latest">
+      <div class="card">
+        <h2 style="font-size:1.2rem;margin-bottom:1rem">Dernière action</h2>
+        <div class="field-row">
+          <div><label>Date affichée</label><input id="latest-date" placeholder="Ex : Septembre 2026"></div>
+          <div><label>Image</label><select id="latest-image"></select></div>
+        </div>
+        <label>Titre</label><input id="latest-title">
+        <label>Texte</label><textarea id="latest-text"></textarea>
+        <label>Texte alternatif de l'image (accessibilité)</label><input id="latest-alt">
+      </div>
+      <button class="btn btn-primary" onclick="saveLatest()">Publier la dernière action</button>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="panel" id="panel-timeline">
+      <div class="card">
+        <h2 style="font-size:1.2rem;margin-bottom:1rem">Actions récentes (liste)</h2>
+        <div id="timeline-list"></div>
+        <button class="btn add-row" onclick="addTimelineItem()">+ Ajouter une action</button>
+      </div>
+      <button class="btn btn-primary" onclick="saveTimeline()">Publier les actions récentes</button>
+    </section>
+
+    <!-- GALERIE -->
+    <section class="panel" id="panel-gallery">
+      <div class="card">
+        <h2 style="font-size:1.2rem;margin-bottom:1rem">Galerie</h2>
+        <div id="gallery-list" class="gallery-grid"></div>
+        <label>Ajouter des images</label>
+        <input type="file" id="gallery-upload" accept="image/*" multiple>
+        <p class="hint">Les images sont envoyées dans le dossier img/ du dépôt, puis ajoutées à la galerie.</p>
+        <button class="btn btn-primary" onclick="uploadGalleryImages()" id="gallery-upload-btn">Envoyer et ajouter à la galerie</button>
+      </div>
+      <button class="btn btn-primary" onclick="saveGalleryOrder()">Publier les modifications de la galerie</button>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ====== CONFIG ====== */
+const PW_HASH = '74abd531469ba43960ab26d8777dde8ba12e3afeb70f2701e37acce75a34cee3'; // mot de passe par défaut : solidr2026
+const GH_OWNER = 'Rafael-ma0508';
+const GH_REPO = 'Solid-R_Nanterre';
+const GH_BRANCH = 'master';
+const CONTENT_PATH = 'content.json';
+const TOKEN_KEY = 'solidr_admin_token';
+
+const FALLBACK_DATA = {
+  stats: [
+    { value: '7', label: 'bénévoles engagés' },
+    { value: '98%', label: 'de satisfaction' },
+    { value: '50', label: 'distributions réalisées' },
+    { value: '500', label: 'étudiants et bénéficiaires servis' },
+    { value: '10 000 €', label: 'de dons récoltés' }
+  ],
+  actions: [
+    'Distribution de paniers alimentaires solidaires',
+    'Distribution de repas gratuits',
+    'Accompagnement des étudiants vers le stage, l’emploi et l’insertion',
+    'Soutien aux personnes en situation de précarité et de handicap',
+    'Aide humanitaire en France et à l’international',
+    'Organisation d’événements solidaires et d’actions de sensibilisation'
+  ],
+  latestAction: { date: 'Juillet 2026', title: 'Distribution solidaire au service des publics les plus fragiles', text: 'Grâce à la mobilisation des bénévoles et des donateurs, Solid’R a organisé une distribution alimentaire avec des produits essentiels dans un cadre respectueux et bienveillant.', image: './img/photo5.jpg', alt: 'Distribution de paniers solidaires organisée par Solid’R' },
+  recentActions: [
+    { date: 'Juillet 2026', title: 'Collecte et préparation de colis solidaires' },
+    { date: 'Juin 2026', title: 'Accompagnement d’étudiants vers le stage et l’emploi' },
+    { date: 'Mai 2026', title: 'Mobilisation autour des besoins essentiels et du lien social' }
+  ],
+  gallery: [
+    { src: './img/photo5.jpg', alt: 'Vue de la distribution de paniers solidaires aux bénéficiaires' },
+    { src: './img/photo1.jpg', alt: 'Bouteilles et conserves préparées pour une action solidaire' },
+    { src: './img/photo3.jpg', alt: 'Vue d’ensemble des denrées alimentaires distribuées' },
+    { src: './img/photo4.jpg', alt: 'Table de boissons et produits laitiers' },
+    { src: './img/logo.jpg', alt: 'Logo de l’association SolidR' }
+  ]
+};
+
+let currentData = null;   // dernier content.json chargé (objet complet)
+let currentSha = null;    // sha du fichier content.json (null si pas encore créé)
+
+/* ====== UTILITAIRES ====== */
+async function sha256Hex(str){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+function utf8ToB64(str){
+  const bytes = new TextEncoder().encode(str);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  return btoa(binary);
+}
+function b64ToUtf8(b64){
+  const binary = atob(b64.replace(/\n/g,''));
+  const bytes = new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+  return new TextDecoder().decode(bytes);
+}
+function arrayBufferToB64(buffer){
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  const chunk = 0x8000;
+  for(let i=0;i<bytes.length;i+=chunk){
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i+chunk));
+  }
+  return btoa(binary);
+}
+function ghHeaders(){
+  return { 'Authorization': 'token ' + getToken(), 'Accept': 'application/vnd.github+json' };
+}
+function getToken(){ return localStorage.getItem(TOKEN_KEY); }
+function setStatus(el, type, msg){
+  el.className = 'status ' + type;
+  el.textContent = msg;
+}
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ====== AUTHENTIFICATION ====== */
+async function checkPassword(){
+  const val = document.getElementById('pw-input').value;
+  const statusEl = document.getElementById('pw-status');
+  const hash = await sha256Hex(val);
+  if(hash === PW_HASH){
+    document.getElementById('login-screen').style.display = 'none';
+    if(getToken()){
+      initAdminApp();
+    } else {
+      document.getElementById('token-screen').style.display = 'flex';
+    }
+  } else {
+    setStatus(statusEl, 'err', 'Mot de passe incorrect.');
+  }
+}
+document.getElementById('pw-input').addEventListener('keydown', e => { if(e.key === 'Enter') checkPassword(); });
+
+function saveToken(){
+  const val = document.getElementById('token-input').value.trim();
+  const statusEl = document.getElementById('token-status');
+  if(!val){ setStatus(statusEl, 'err', 'Merci de coller un jeton valide.'); return; }
+  localStorage.setItem(TOKEN_KEY, val);
+  document.getElementById('token-screen').style.display = 'none';
+  initAdminApp();
+}
+function changeToken(){
+  localStorage.removeItem(TOKEN_KEY);
+  document.getElementById('admin-app').style.display = 'none';
+  document.getElementById('token-screen').style.display = 'flex';
+}
+function logout(){
+  localStorage.removeItem(TOKEN_KEY);
+  location.reload();
+}
+
+/* ====== CHARGEMENT / SAUVEGARDE GITHUB ====== */
+async function loadContent(){
+  const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${CONTENT_PATH}?ref=${GH_BRANCH}`;
+  const res = await fetch(url, { headers: ghHeaders() });
+  if(res.status === 404){
+    currentData = JSON.parse(JSON.stringify(FALLBACK_DATA));
+    currentSha = null;
+    return;
+  }
+  if(!res.ok){
+    if(res.status === 401 || res.status === 403) throw new Error('Jeton invalide ou droits insuffisants sur le dépôt.');
+    throw new Error('Erreur GitHub (' + res.status + ') en lisant content.json');
+  }
+  const data = await res.json();
+  currentSha = data.sha;
+  currentData = JSON.parse(b64ToUtf8(data.content));
+}
+
+async function commitContent(message){
+  const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${CONTENT_PATH}`;
+  const body = {
+    message: message,
+    content: utf8ToB64(JSON.stringify(currentData, null, 2)),
+    branch: GH_BRANCH
+  };
+  if(currentSha) body.sha = currentSha;
+  const res = await fetch(url, { method: 'PUT', headers: { ...ghHeaders(), 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || ('Erreur GitHub (' + res.status + ') en publiant content.json'));
+  }
+  const result = await res.json();
+  currentSha = result.content.sha;
+}
+
+async function uploadFileToRepo(path, base64Content, message){
+  const url = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`;
+  // vérifier si le fichier existe déjà (pour récupérer son sha et éviter un conflit)
+  let sha = null;
+  const check = await fetch(url + `?ref=${GH_BRANCH}`, { headers: ghHeaders() });
+  if(check.ok){ const j = await check.json(); sha = j.sha; }
+  const body = { message, content: base64Content, branch: GH_BRANCH };
+  if(sha) body.sha = sha;
+  const res = await fetch(url, { method:'PUT', headers:{ ...ghHeaders(), 'Content-Type':'application/json' }, body: JSON.stringify(body) });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({}));
+    throw new Error(err.message || ('Erreur GitHub (' + res.status + ') en envoyant ' + path));
+  }
+}
+
+/* ====== INITIALISATION DE L'APP ====== */
+async function initAdminApp(){
+  document.getElementById('admin-app').style.display = 'block';
+  const statusEl = document.getElementById('global-status');
+  setStatus(statusEl, 'loading', 'Chargement du contenu actuel du site…');
+  try{
+    await loadContent();
+    statusEl.className = 'status';
+    renderStats();
+    renderLatest();
+    renderTimeline();
+    renderGallery();
+  }catch(e){
+    setStatus(statusEl, 'err', e.message);
+  }
+}
+
+/* ====== ONGLETS ====== */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ====== CHIFFRES CLES ====== */
+function renderStats(){
+  const wrap = document.getElementById('stats-list');
+  wrap.innerHTML = currentData.stats.map((s,i)=>`
+    <div class="repeat-item">
+      <button class="btn btn-danger remove-btn" onclick="removeStat(${i})">Supprimer</button>
+      <div class="field-row">
+        <div><label>Valeur</label><input value="${escapeHtml(s.value)}" data-idx="${i}" data-field="value" class="stat-input"></div>
+        <div><label>Libellé</label><input value="${escapeHtml(s.label)}" data-idx="${i}" data-field="label" class="stat-input"></div>
+      </div>
+    </div>`).join('');
+}
+function addStat(){ currentData.stats.push({value:'', label:''}); renderStats(); }
+function removeStat(i){ currentData.stats.splice(i,1); renderStats(); }
+function collectStats(){
+  document.querySelectorAll('.stat-input').forEach(inp=>{
+    currentData.stats[inp.dataset.idx][inp.dataset.field] = inp.value;
+  });
+}
+async function saveStats(){
+  collectStats();
+  await publish('Mise à jour des chiffres clés depuis l’admin');
+}
+
+/* ====== DERNIERE ACTION ====== */
+function populateImageSelect(){
+  const sel = document.getElementById('latest-image');
+  sel.innerHTML = currentData.gallery.map(g=>`<option value="${escapeHtml(g.src)}">${escapeHtml(g.src)}</option>`).join('');
+}
+function renderLatest(){
+  populateImageSelect();
+  const l = currentData.latestAction;
+  document.getElementById('latest-date').value = l.date || '';
+  document.getElementById('latest-title').value = l.title || '';
+  document.getElementById('latest-text').value = l.text || '';
+  document.getElementById('latest-alt').value = l.alt || '';
+  document.getElementById('latest-image').value = l.image || '';
+}
+async function saveLatest(){
+  currentData.latestAction = {
+    date: document.getElementById('latest-date').value,
+    title: document.getElementById('latest-title').value,
+    text: document.getElementById('latest-text').value,
+    alt: document.getElementById('latest-alt').value,
+    image: document.getElementById('latest-image').value
+  };
+  await publish('Mise à jour de la dernière action depuis l’admin');
+}
+
+/* ====== TIMELINE (ACTIONS RECENTES) ====== */
+function renderTimeline(){
+  const wrap = document.getElementById('timeline-list');
+  wrap.innerHTML = currentData.recentActions.map((a,i)=>`
+    <div class="repeat-item">
+      <button class="btn btn-danger remove-btn" onclick="removeTimelineItem(${i})">Supprimer</button>
+      <div class="field-row">
+        <div><label>Date</label><input value="${escapeHtml(a.date)}" data-idx="${i}" data-field="date" class="tl-input"></div>
+        <div><label>Titre</label><input value="${escapeHtml(a.title)}" data-idx="${i}" data-field="title" class="tl-input"></div>
+      </div>
+    </div>`).join('');
+}
+function addTimelineItem(){ currentData.recentActions.unshift({date:'', title:''}); renderTimeline(); }
+function removeTimelineItem(i){ currentData.recentActions.splice(i,1); renderTimeline(); }
+function collectTimeline(){
+  document.querySelectorAll('.tl-input').forEach(inp=>{
+    currentData.recentActions[inp.dataset.idx][inp.dataset.field] = inp.value;
+  });
+}
+async function saveTimeline(){
+  collectTimeline();
+  await publish('Mise à jour des actions récentes depuis l’admin');
+}
+
+/* ====== GALERIE ====== */
+function renderGallery(){
+  const wrap = document.getElementById('gallery-list');
+  wrap.innerHTML = currentData.gallery.map((g,i)=>`
+    <div class="gallery-item">
+      <img src="${escapeHtml(g.src)}" alt="">
+      <div class="gi-body">
+        <input value="${escapeHtml(g.alt)}" data-idx="${i}" data-field="alt" class="gal-input" placeholder="Texte alternatif">
+        <button class="btn btn-danger" style="width:100%" onclick="removeGalleryItem(${i})">Retirer de la galerie</button>
+      </div>
+    </div>`).join('');
+}
+function removeGalleryItem(i){ currentData.gallery.splice(i,1); renderGallery(); populateImageSelect(); }
+function collectGalleryAlts(){
+  document.querySelectorAll('.gal-input').forEach(inp=>{
+    currentData.gallery[inp.dataset.idx][inp.dataset.field] = inp.value;
+  });
+}
+async function saveGalleryOrder(){
+  collectGalleryAlts();
+  await publish('Mise à jour de la galerie depuis l’admin');
+}
+async function uploadGalleryImages(){
+  const input = document.getElementById('gallery-upload');
+  const files = Array.from(input.files || []);
+  const statusEl = document.getElementById('global-status');
+  const btn = document.getElementById('gallery-upload-btn');
+  if(files.length === 0){ setStatus(statusEl, 'err', 'Choisis au moins une image avant d’envoyer.'); return; }
+  btn.disabled = true;
+  try{
+    for(const file of files){
+      setStatus(statusEl, 'loading', 'Envoi de ' + file.name + '…');
+      const safeName = Date.now() + '-' + file.name.toLowerCase().replace(/[^a-z0-9.\-]+/g,'-');
+      const buffer = await file.arrayBuffer();
+      const b64 = arrayBufferToB64(buffer);
+      await uploadFileToRepo('img/' + safeName, b64, 'Ajout image galerie : ' + safeName);
+      currentData.gallery.push({ src: './img/' + safeName, alt: '' });
+    }
+    await commitContent('Ajout de ' + files.length + ' image(s) à la galerie depuis l’admin');
+    setStatus(statusEl, 'ok', 'Image(s) envoyée(s) et ajoutée(s) à la galerie ✓');
+    input.value = '';
+    renderGallery();
+    populateImageSelect();
+  }catch(e){
+    setStatus(statusEl, 'err', e.message);
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* ====== PUBLICATION GENERIQUE ====== */
+async function publish(message){
+  const statusEl = document.getElementById('global-status');
+  setStatus(statusEl, 'loading', 'Publication en cours…');
+  try{
+    await commitContent(message);
+    setStatus(statusEl, 'ok', 'Publié avec succès ✓ (le site se met à jour dans les secondes qui suivent)');
+  }catch(e){
+    setStatus(statusEl, 'err', e.message);
+  }
+}
+
+/* ====== DEMARRAGE ====== */
+if(getToken()){
+  // token déjà présent : on reste quand même sur l'écran mot de passe (protection à chaque visite)
+}
+</script>
+</body>
+</html>
